@@ -102,7 +102,30 @@ resource "azurerm_network_security_group" "adrien" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-}
+
+  security_rule {
+    name                       = "Allow-SSH"
+    priority                   = 2000
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "Allow-Flask"
+    priority                   = 3000
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "5000"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 
 resource "azurerm_network_interface_security_group_association" "adrien" {
   network_interface_id      = azurerm_network_interface.adrien.id
