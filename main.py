@@ -32,14 +32,13 @@ def upload_file():
 @app.route('/generate_sas/<filename>', methods=['GET'])
 def generate_sas(filename):
     try:
-        # Définir les permissions (lecture seule ici)
         sas_token = generate_blob_sas(
             account_name=account_name,
             container_name=container_name,
             blob_name=filename,
             account_key=account_key,
-            permission=BlobSasPermissions(read=True),
-            expiry=datetime.utcnow() + timedelta(hours=1)  # Expire dans 1 heure
+            permission=BlobSasPermissions(read=True, write=True, delete=True),
+            expiry=datetime.utcnow() + timedelta(hours=1)
         )
 
         file_url = f"https://{account_name}.blob.core.windows.net/{container_name}/{filename}?{sas_token}"
