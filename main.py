@@ -7,8 +7,7 @@ app = Flask(__name__)
 
 # Configuration
 account_name = "adrienstorageacct"
-with open('/path/to/your/python/script/account_key.txt', 'r') as file:
-    account_key = file.read().strip()
+account_key = os.getenv("ACCOUNT_KEY")
 container_name = "statics"
 
 blob_service_client = BlobServiceClient(account_url=f"https://{account_name}.blob.core.windows.net", credential=account_key)

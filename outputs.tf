@@ -21,3 +21,8 @@ output "flask_url" {
 output "resource_group_name" {
   value = azurerm_resource_group.adrien.name
 }
+
+output "account_key" {
+  value     = var.account_key
+  sensitive = true
+}

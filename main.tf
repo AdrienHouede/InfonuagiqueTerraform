@@ -68,11 +68,22 @@ resource "azurerm_linux_virtual_machine" "adrien" {
   }
 
   provisioner "remote-exec" {
+    connection {
+      type        = "ssh"
+      host        = azurerm_public_ip.adrien.ip_address
+      user        = var.admin_username
+      password    = var.admin_password
+    }
+
     inline = [
       "sudo apt-get update -y",
-      "sudo apt-get install -y python3-pip python3-dev git",
+      "sudo apt-get install -y python3-dev build-essential libssl-dev libffi-dev cargo",
       "git clone https://github.com/AdrienHouede/InfonuagiqueTerraform.git /home/adrien/InfonuagiqueTerraform",
-      "cd /home/adrien/InfonuagiqueTerraform && pip3 install -r requirements.txt",
+      "cd /home/adrien/InfonuagiqueTerraform",
+      "pip3 install --upgrade pip",
+      "pip3 install setuptools-rust",
+      "pip3 install -r requirements.txt",
+      "export ACCOUNT_KEY=$(terraform output -raw account_key)",
       "nohup python3 /home/adrien/InfonuagiqueTerraform/main.py &"
     ]
   }
