@@ -66,7 +66,19 @@ resource "azurerm_linux_virtual_machine" "adrien" {
   tags = {
     environment = "dev"
   }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get update -y",
+      "sudo apt-get install -y python3-pip python3-dev git",
+      "git clone https://github.com/AdrienHouede/InfonuagiqueTerraform.git /home/adrien/InfonuagiqueTerraform",
+      "cd /home/adrien/InfonuagiqueTerraform && pip3 install -r requirements.txt",
+      "nohup python3 /home/adrien/InfonuagiqueTerraform/main.py &"
+    ]
+  }
+  
 }
+
 
 resource "azurerm_storage_account" "adrien" {
   name                     = "adrienstorageacct"
@@ -131,4 +143,10 @@ resource "azurerm_network_security_group" "adrien" {
 resource "azurerm_network_interface_security_group_association" "adrien" {
   network_interface_id      = azurerm_network_interface.adrien.id
   network_security_group_id = azurerm_network_security_group.adrien.id
+}
+
+variable "account_key" {
+  description = "Le clé d'accès du compte Azure Storage"
+  type        = string
+  sensitive   = true
 }

@@ -1,6 +1,6 @@
 import requests
 
-url = "http://108.143.140.145:5000/download/infamous.png"
+url = "http://108.143.140.145:5000/generate_sas/mon_fichier.png"
 response = requests.get(url)
 
 if response.status_code == 200:

@@ -1,13 +1,23 @@
 import requests
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from io import BytesIO
 
-sas_url = "https://adrienstorageacct.blob.core.windows.net/statics/mon_fichier.pdf?st=...&se=...&sp=rw"
+url = "http://108.143.140.145:5000/generate_sas/mon_fichier.pdf"
+response = requests.get(url)
 
-file_path = "nouveau_fichier.pdf"
-
-with open(file_path, "rb") as file:
-    response = requests.put(sas_url, data=file)
-
-if response.status_code == 201:
-    print(f"{file_path} modifié avec succès !")
+if response.status_code == 200:
+    data = response.json()
+    sas_url = data.get("sas_url")
+    print(response.text)
 else:
-    print("Erreur lors de la modification :", response.text)
+    print("Erreur :", response.text)
+
+blob_client = BlobClient.from_blob_url(sas_url)
+
+new_content = "Nouveau contenu du fichier."
+
+new_content_bytes = BytesIO(new_content.encode('utf-8'))
+
+blob_client.upload_blob(new_content_bytes, overwrite=True)
+
+print("Fichier mis à jour avec succès.")
